@@ -1,0 +1,298 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+    
+#regForm {
+    background-color: #ffffff;
+    margin: 0px auto;
+    font-family: Raleway;
+    padding: 40px;
+    border-radius: 10px
+}
+
+#register{
+
+  color: #6A1B9A;
+}
+
+h1 {
+    text-align: center
+}
+
+input {
+    padding: 10px;
+    width: 100%;
+    font-size: 17px;
+    font-family: Raleway;
+    border: 1px solid #aaaaaa;
+    border-radius: 10px;
+    -webkit-appearance: none;
+}
+
+
+
+.tab input:focus{
+
+  border:1px solid #6a1b9a !important;
+  outline: none;
+}
+
+input.invalid {
+ 
+    border:1px solid #e03a0666;
+}
+
+.tab {
+    display: none
+}
+
+button {
+    background-color: #6A1B9A;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    padding: 10px 20px;
+    font-size: 17px;
+    font-family: Raleway;
+    cursor: pointer
+}
+
+button:hover {
+    opacity: 0.8
+}
+
+button:focus{
+
+  outline: none !important;
+}
+
+#prevBtn {
+    background-color: #bbbbbb
+}
+
+
+.all-steps{
+      text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 100%;
+    display: inline-flex;
+    justify-content: center;
+}
+
+.step {
+       height: 40px;
+    width: 40px;
+    margin: 0 2px;
+    background-color: #bbbbbb;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    color: #6a1b9a;
+    opacity: 0.5;
+}
+
+.step.active {
+    opacity: 1
+}
+
+
+.step.finish {
+   color: #fff;
+   background: #6a1b9a;
+   opacity: 1;
+
+}
+
+
+
+.all-steps {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px
+}
+
+.thanks-message {
+    display: none
+}
+
+</style>
+<script>
+    var currentTab = 0;
+              document.addEventListener("DOMContentLoaded", function(event) {
+
+
+              showTab(currentTab);
+
+              });
+
+              function showTab(n) {
+              var x = document.getElementsByClassName("tab");
+              x[n].style.display = "block";
+              if (n == 0) {
+              document.getElementById("prevBtn").style.display = "none";
+              } else {
+              document.getElementById("prevBtn").style.display = "inline";
+              }
+              if (n == (x.length - 1)) {
+              document.getElementById("nextBtn").innerHTML = '<i class="fa fa-angle-double-right"></i>';
+              } else {
+              document.getElementById("nextBtn").innerHTML = '<i class="fa fa-angle-double-right"></i>';
+              }
+              fixStepIndicator(n)
+              }
+
+              function nextPrev(n) {
+              var x = document.getElementsByClassName("tab");
+              if (n == 1 && !validateForm()) return false;
+              x[currentTab].style.display = "none";
+              currentTab = currentTab + n;
+              if (currentTab >= x.length) {
+            
+              document.getElementById("nextprevious").style.display = "none";
+              document.getElementById("all-steps").style.display = "none";
+              document.getElementById("register").style.display = "none";
+              document.getElementById("text-message").style.display = "block";
+
+
+
+
+              }
+              showTab(currentTab);
+              }
+
+              function validateForm() {
+                   var x, y, i, valid = true;
+                   x = document.getElementsByClassName("tab");
+                   y = x[currentTab].getElementsByTagName("input");
+                   for (i = 0; i < y.length; i++) {
+                       if (y[i].value == "") {
+                           y[i].className += " invalid";
+                           valid = false;
+                       }
+
+
+                   }
+                   if (valid) {
+                       document.getElementsByClassName("step")[currentTab].className += " finish";
+                   }
+                   return valid;
+               }
+
+               function fixStepIndicator(n) {
+                   var i, x = document.getElementsByClassName("step");
+                   for (i = 0; i < x.length; i++) {
+                       x[i].className = x[i].className.replace(" active", "");
+                   }
+                   x[n].className += " active";
+               }
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<header class="intro  align-items-center  jarallax" data-speed="0.5" data-img-position="50% 20%" style="background-image: url('{% static 'img/webimg/bg_2.jpg' %}');">
+
+    <div class="pattern" style="opacity: 0.15;"></div>
+
+    <div class="container">
+        <div class="intro__text">
+            <p class="intro__subtitle"></p>
+            <h1 class="intro__title">Predict Crop</h1>
+        </div>
+    </div>
+</header>
+<div>
+    {% if mess_bool %}
+    <script>
+        var a ='{{mess}}'
+        alert(a)
+    </script>
+    {% endif %}
+</div>
+<div class="container mt-5">
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-md-8">
+            <form id="regForm" method="post" action="{% url 'predictcrop' %}">
+                {% csrf_token %}
+                <h1 id="register">Predict Form</h1>
+              
+                <div class="tab">
+                  <h4>Ratio of Nitrogen content in soil ?
+                </h4>
+                    <p>
+                      <input placeholder=""   name="nitrogen_ratio"  ></p>
+                      
+                      <h4>Ratio of Phosphorous content in soil ?
+                    </h4>
+                        <p>
+                          <input placeholder="" name="phosphorous_ratio"  ></p>
+                      
+                          <h4>Ratio of Potassium content in soil ?
+                        </h4>
+                            <p>
+                              <input placeholder="" name="potassium_ratio"  ></p>
+                      
+                              
+                          <h4>Ph Value soil ?
+                        </h4>
+                            <p>
+                              <input placeholder=""  name="ph_value"  ></p>
+                              <h4>Rainfall in mm ?
+
+                            </h4>
+                                <p>
+                                  <input placeholder=""  name="rainfall"  ></p>
+                                  <h4> Temperature in degree Celsius?
+
+                                  </h4>
+                                      <p>
+                                        <input placeholder=""   name="temperature" ></p>
+                                        <h4>  Select Crop Type?
+                                           
+                                        </h4>
+                                       
+                                            <p>
+                                                <select name="crop_type" style="width: 100%; padding: 10px;" style="font-size: 10px;" class="form-select">
+
+                                                    {% for key, value in crop_type.items %}
+
+                                                    <option value="{{key}}" style="font-size: 10px;" >{{value}}</option>
+
+                                                        {% endfor %}
+                                                   
+                                                  </select>
+                                        <h4>  Select State?
+                                           
+                                        </h4>
+                                       
+                                            <p>
+                                                <select  name="state" style="width: 100%; padding: 10px;" style="font-size: 10px;" class="form-select" /required>
+                                                    <option value="" style="font-size: 10px;" >Select State</option>
+
+                                                    {% for key, value in state.items %}
+
+                                                    <option value="{{key}}" style="font-size: 10px;" >{{value}}</option>
+
+                                                        {% endfor %}
+                                                   
+                                                  </select>
+                                           
+                </div>
+               
+                
+                <div style="overflow:auto;" >
+                    <div style="float:right;">
+                      <button  type="submit" >Predict</button> 
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
